@@ -9,9 +9,7 @@ import static com.matheusphalves.unittest.fundamentals.utils.DateUtil.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
 
@@ -25,13 +23,36 @@ public class AllocationServiceTest {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
+
+    private AllocationService allocationService;
+
+    @Before
+    public void setup(){
+        System.out.println("Before");
+        allocationService = new AllocationService();
+    }
+
+    @After
+    public void tearDown(){
+        System.out.println("After");
+    }
+
+    @BeforeClass
+    public static void setupClass(){
+        System.out.println("Before class");
+    }
+
+    @AfterClass
+    public static void tearDownClass(){
+        System.out.println("After class");
+    }
+
     @Test
     public void test() throws Exception {
 
         /* Fast, Independent, Repeatable, Self-Verifying, Timely */
 
         //scenario
-        AllocationService allocationService = new AllocationService();
         User user = new User("Usuario 1");
         Movie movie = new Movie("Filme 1", 2, 5.0);
 
@@ -52,7 +73,7 @@ public class AllocationServiceTest {
     @Test
     public void testWithErrorCollector() throws Exception {
         //scenario
-        AllocationService allocationService = new AllocationService();
+
         User user = new User("Usuario 1");
         Movie movie = new Movie("Filme 1", 2, 5.0);
 
@@ -64,8 +85,8 @@ public class AllocationServiceTest {
         errorCollector.checkThat(allocation.getAllocationValue(), is(equalTo(5.0)));
         errorCollector.checkThat(allocation.getAllocationValue(), is(not(4.0)));
 
-        errorCollector.checkThat(isSameDate(allocation.getAllocationDate(), new Date()), is(false));
-        errorCollector.checkThat(isSameDate(allocation.getReturnDate(), getDateWithDaysDiff(1)), is(false));
+        errorCollector.checkThat(isSameDate(allocation.getAllocationDate(), new Date()), is(true));
+        errorCollector.checkThat(isSameDate(allocation.getReturnDate(), getDateWithDaysDiff(1)), is(true));
     }
 
     @Test(expected = MovieWithoutStockException.class)
@@ -83,7 +104,6 @@ public class AllocationServiceTest {
     @Test
     public void testAllocationMovieWithoutStock2() {
         //scenario
-        AllocationService allocationService = new AllocationService();
         User user = new User("Usuario 1");
         Movie movie = new Movie("Filme 1", 0, 5.0);
 
@@ -102,7 +122,6 @@ public class AllocationServiceTest {
     @Test
     public void testAllocationMovieWithoutStock3() throws Exception {
         //scenario
-        AllocationService allocationService = new AllocationService();
         User user = new User("Usuario 1");
         Movie movie = new Movie("Filme 1", 0, 5.0);
 
@@ -117,7 +136,6 @@ public class AllocationServiceTest {
     @Test
     public void testAllocationEmptyUser() throws Exception{
         //scenario
-        AllocationService allocationService = new AllocationService();
         Movie movie = new Movie("Filme 1", 1, 5.0);
 
         //action
@@ -135,7 +153,6 @@ public class AllocationServiceTest {
     @Test
     public void testAllocationEmptyMovie() throws Exception {
         //scenario
-        AllocationService allocationService = new AllocationService();
         User user = new User("Usuario 1");
 
         expectedException.expect(RentalCompanyException.class);
