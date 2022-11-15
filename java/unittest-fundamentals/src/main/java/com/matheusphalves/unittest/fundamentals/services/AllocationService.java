@@ -3,6 +3,7 @@ package com.matheusphalves.unittest.fundamentals.services;
 import static com.matheusphalves.unittest.fundamentals.utils.DateUtil.addDays;
 
 import java.util.Date;
+import java.util.List;
 
 import com.matheusphalves.unittest.fundamentals.exceptions.MovieWithoutStockException;
 import com.matheusphalves.unittest.fundamentals.exceptions.RentalCompanyException;
@@ -12,26 +13,30 @@ import com.matheusphalves.unittest.fundamentals.models.User;
 
 public class AllocationService {
 	
-	public Allocation allocateMovie(User user, Movie movie) throws Exception, RentalCompanyException  {
+	public Allocation allocateMovies(User user, List<Movie> movies) throws Exception, RentalCompanyException  {
 
 
 		if(user == null){
 			throw new RentalCompanyException("Empty user!");
 		}
 
-		if(movie == null){
+		if(movies == null || movies.isEmpty()){
 			throw new RentalCompanyException("Empty movie!");
 		}
 
-		if(movie.getStock() == 0){
-			throw new MovieWithoutStockException("Movie without stock!");
-		}
-
 		Allocation allocation = new Allocation();
-		allocation.setFilme(movie);
-		allocation.setUsuario(user);
-		allocation.setAllocationDate(new Date());
-		allocation.setAllocationValue(movie.getAllocationPrice());
+
+		for(Movie  movie: movies){
+
+			if(movie.getStock() == 0){
+				throw new MovieWithoutStockException("Movie without stock!");
+			}
+
+			allocation.addMovie(movie);
+			allocation.setUsuario(user);
+			allocation.setAllocationDate(new Date());
+			allocation.increaseAllocationValue(movie.getAllocationPrice());
+		}
 
 		//Entrega no dia seguinte
 		Date dataEntrega = new Date();

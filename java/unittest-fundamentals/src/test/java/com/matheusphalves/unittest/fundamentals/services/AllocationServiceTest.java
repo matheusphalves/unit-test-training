@@ -13,7 +13,9 @@ import org.junit.*;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class AllocationServiceTest {
 
@@ -26,10 +28,28 @@ public class AllocationServiceTest {
 
     private AllocationService allocationService;
 
+    private List<Movie> movies;
+
+    private User user;
+
     @Before
     public void setup(){
         System.out.println("Before");
         allocationService = new AllocationService();
+
+        user = new User("User 1");
+
+
+        movies = new ArrayList<>();
+
+        Movie movie1 = new Movie("Movie 1", 3, 5.0);
+        Movie movie2 = new Movie("Movie 2", 2, 4.0);
+        Movie movie3 = new Movie("Movie 3", 1, 3.0);
+
+        movies.add(movie1);
+        movies.add(movie2);
+        movies.add(movie3);
+
     }
 
     @After
@@ -52,18 +72,13 @@ public class AllocationServiceTest {
 
         /* Fast, Independent, Repeatable, Self-Verifying, Timely */
 
-        //scenario
-        User user = new User("Usuario 1");
-        Movie movie = new Movie("Filme 1", 2, 5.0);
-
-
         //action
-        Allocation allocation = allocationService.allocateMovie(user, movie);
+        Allocation allocation = allocationService.allocateMovies(user, movies);
 
         //check
-        assertEquals(5.0, allocation.getAllocationValue(), 0.01);
-        assertThat(allocation.getAllocationValue(), is(equalTo(5.0)));
-        assertThat(allocation.getAllocationValue(), is(not(4.0)));
+        assertEquals(12.0, allocation.getAllocationValue(), 0.01);
+        assertThat(allocation.getAllocationValue(), is(equalTo(12.0)));
+        assertThat(allocation.getAllocationValue(), is(not(5.0)));
 
         assertTrue(isSameDate(allocation.getAllocationDate(), new Date()));
         assertTrue(isSameDate(allocation.getReturnDate(), getDateWithDaysDiff(1)));
@@ -74,15 +89,11 @@ public class AllocationServiceTest {
     public void testWithErrorCollector() throws Exception {
         //scenario
 
-        User user = new User("Usuario 1");
-        Movie movie = new Movie("Filme 1", 2, 5.0);
-
-
         //action
-        Allocation allocation = allocationService.allocateMovie(user, movie);
+        Allocation allocation = allocationService.allocateMovies(user, movies);
 
         //check
-        errorCollector.checkThat(allocation.getAllocationValue(), is(equalTo(5.0)));
+        errorCollector.checkThat(allocation.getAllocationValue(), is(equalTo(12.0)));
         errorCollector.checkThat(allocation.getAllocationValue(), is(not(4.0)));
 
         errorCollector.checkThat(isSameDate(allocation.getAllocationDate(), new Date()), is(true));
@@ -92,26 +103,22 @@ public class AllocationServiceTest {
     @Test(expected = MovieWithoutStockException.class)
     public void testAllocationMovieWithoutStock() throws Exception {
         //scenario
-        AllocationService allocationService = new AllocationService();
-        User user = new User("Usuario 1");
-        Movie movie = new Movie("Filme 1", 0, 5.0);
-
-
+        Movie movie = new Movie("Movie 4", 0, 2.0);
+        movies.add(movie);
         //action
-        Allocation allocation = allocationService.allocateMovie(user, movie);
+        Allocation allocation = allocationService.allocateMovies(user, movies);
     }
 
     @Test
     public void testAllocationMovieWithoutStock2() {
         //scenario
-        User user = new User("Usuario 1");
-        Movie movie = new Movie("Filme 1", 0, 5.0);
-
+        Movie movie = new Movie("Movie 4", 0, 2.0);
+        movies.add(movie);
 
         //action
         try {
 
-            Allocation allocation = allocationService.allocateMovie(user, movie);
+            Allocation allocation = allocationService.allocateMovies(user, movies);
             fail("Should throw an exception!");
 
         } catch (Exception e) {
@@ -122,26 +129,24 @@ public class AllocationServiceTest {
     @Test
     public void testAllocationMovieWithoutStock3() throws Exception {
         //scenario
-        User user = new User("Usuario 1");
-        Movie movie = new Movie("Filme 1", 0, 5.0);
+        Movie movie = new Movie("Movie 4", 0, 2.0);
+        movies.add(movie);
 
         expectedException.expect(Exception.class);
         expectedException.expectMessage("Movie without stock!");
 
 
         //action
-        Allocation allocation = allocationService.allocateMovie(user, movie);
+        Allocation allocation = allocationService.allocateMovies(user, movies);
     }
 
     @Test
     public void testAllocationEmptyUser() throws Exception{
-        //scenario
-        Movie movie = new Movie("Filme 1", 1, 5.0);
 
         //action
         try {
 
-            Allocation allocation = allocationService.allocateMovie(null, movie);
+            Allocation allocation = allocationService.allocateMovies(null, movies);
             fail("Should throw an exception!");
 
         } catch (RentalCompanyException e) {
@@ -153,14 +158,12 @@ public class AllocationServiceTest {
     @Test
     public void testAllocationEmptyMovie() throws Exception {
         //scenario
-        User user = new User("Usuario 1");
-
         expectedException.expect(RentalCompanyException.class);
         expectedException.expectMessage("Empty movie!");
 
 
         //action
-        Allocation allocation = allocationService.allocateMovie(user, null);
+        Allocation allocation = allocationService.allocateMovies(user, null);
     }
 
 }
