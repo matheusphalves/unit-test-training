@@ -25,6 +25,8 @@ public class AllocationService {
 		}
 
 		Allocation allocation = new Allocation();
+		int movieCounter = 1;
+		double discountRate = 0.25;
 
 		for(Movie  movie: movies){
 
@@ -35,7 +37,13 @@ public class AllocationService {
 			allocation.addMovie(movie);
 			allocation.setUsuario(user);
 			allocation.setAllocationDate(new Date());
+
+			if(movieCounter>=3 && movieCounter<= 6){
+				movie.setAllocationPrice(movie.getAllocationPrice()*(1 - discountRate));
+				discountRate+= 0.25;
+			}
 			allocation.increaseAllocationValue(movie.getAllocationPrice());
+			movieCounter++;
 		}
 
 		//Entrega no dia seguinte

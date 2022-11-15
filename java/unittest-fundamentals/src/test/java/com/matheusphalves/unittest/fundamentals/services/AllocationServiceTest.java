@@ -42,13 +42,19 @@ public class AllocationServiceTest {
 
         movies = new ArrayList<>();
 
-        Movie movie1 = new Movie("Movie 1", 3, 5.0);
-        Movie movie2 = new Movie("Movie 2", 2, 4.0);
-        Movie movie3 = new Movie("Movie 3", 1, 3.0);
+        Movie movie1 = new Movie("Movie 1", 4, 5.0);
+        Movie movie2 = new Movie("Movie 2", 3, 4.0);
+        Movie movie3 = new Movie("Movie 3", 2, 3.0);
+        Movie movie4 = new Movie("Movie 4", 2, 3.0);
+        Movie movie5 = new Movie("Movie 5", 2, 3.0);
+        Movie movie6 = new Movie("Movie 6", 2, 3.0);
 
         movies.add(movie1);
         movies.add(movie2);
         movies.add(movie3);
+        movies.add(movie4);
+        movies.add(movie5);
+        movies.add(movie6);
 
     }
 
@@ -76,8 +82,8 @@ public class AllocationServiceTest {
         Allocation allocation = allocationService.allocateMovies(user, movies);
 
         //check
-        assertEquals(12.0, allocation.getAllocationValue(), 0.01);
-        assertThat(allocation.getAllocationValue(), is(equalTo(12.0)));
+        assertEquals(13.5, allocation.getAllocationValue(), 0.01);
+        assertThat(allocation.getAllocationValue(), is(equalTo(13.5)));
         assertThat(allocation.getAllocationValue(), is(not(5.0)));
 
         assertTrue(isSameDate(allocation.getAllocationDate(), new Date()));
@@ -93,7 +99,7 @@ public class AllocationServiceTest {
         Allocation allocation = allocationService.allocateMovies(user, movies);
 
         //check
-        errorCollector.checkThat(allocation.getAllocationValue(), is(equalTo(12.0)));
+        errorCollector.checkThat(allocation.getAllocationValue(), is(equalTo(13.5)));
         errorCollector.checkThat(allocation.getAllocationValue(), is(not(4.0)));
 
         errorCollector.checkThat(isSameDate(allocation.getAllocationDate(), new Date()), is(true));
