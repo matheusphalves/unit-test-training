@@ -9,11 +9,13 @@ import static com.matheusphalves.unittest.fundamentals.utils.DateUtil.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import com.matheusphalves.unittest.fundamentals.utils.DateUtil;
 import org.junit.*;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -77,7 +79,7 @@ public class AllocationServiceTest {
     public void test() throws Exception {
 
         /* Fast, Independent, Repeatable, Self-Verifying, Timely */
-
+        Assume.assumeFalse(DateUtil.checkDayOfWeek(new Date(), Calendar.SATURDAY));
         //action
         Allocation allocation = allocationService.allocateMovies(user, movies);
 
@@ -94,7 +96,7 @@ public class AllocationServiceTest {
     @Test
     public void testWithErrorCollector() throws Exception {
         //scenario
-
+        Assume.assumeFalse(DateUtil.checkDayOfWeek(new Date(), Calendar.SATURDAY));
         //action
         Allocation allocation = allocationService.allocateMovies(user, movies);
 
@@ -170,6 +172,18 @@ public class AllocationServiceTest {
 
         //action
         Allocation allocation = allocationService.allocateMovies(user, null);
+    }
+
+    @Test
+    public void testShouldNotReturnDateOnSunday() throws Exception {
+
+        Assume.assumeTrue(DateUtil.checkDayOfWeek(new Date(), Calendar.SATURDAY));
+
+        Allocation allocation = allocationService.allocateMovies(user, movies);
+
+        boolean isMonday = DateUtil.checkDayOfWeek(allocation.getReturnDate(), Calendar.MONDAY);
+
+        assertTrue(isMonday);
     }
 
 }

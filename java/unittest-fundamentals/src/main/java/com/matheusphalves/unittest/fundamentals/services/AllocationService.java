@@ -2,6 +2,7 @@ package com.matheusphalves.unittest.fundamentals.services;
 
 import static com.matheusphalves.unittest.fundamentals.utils.DateUtil.addDays;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import com.matheusphalves.unittest.fundamentals.exceptions.RentalCompanyExceptio
 import com.matheusphalves.unittest.fundamentals.models.Movie;
 import com.matheusphalves.unittest.fundamentals.models.Allocation;
 import com.matheusphalves.unittest.fundamentals.models.User;
+import com.matheusphalves.unittest.fundamentals.utils.DateUtil;
 
 public class AllocationService {
 	
@@ -47,9 +49,13 @@ public class AllocationService {
 		}
 
 		//Entrega no dia seguinte
-		Date dataEntrega = new Date();
-		dataEntrega = addDays(dataEntrega, 1);
-		allocation.setReturnDate(dataEntrega);
+		Date returnDate = new Date();
+		returnDate = addDays(returnDate, 1);
+
+		if(DateUtil.checkDayOfWeek(returnDate, Calendar.SUNDAY)){
+			returnDate = addDays(returnDate, 1);
+		}
+		allocation.setReturnDate(returnDate);
 		
 		//Salvando a locacao...	
 		//TODO adicionar método para salvar
