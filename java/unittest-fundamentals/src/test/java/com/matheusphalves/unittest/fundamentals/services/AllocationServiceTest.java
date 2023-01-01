@@ -2,9 +2,12 @@ package com.matheusphalves.unittest.fundamentals.services;
 
 import com.matheusphalves.unittest.fundamentals.exceptions.MovieWithoutStockException;
 import com.matheusphalves.unittest.fundamentals.exceptions.RentalCompanyException;
+import com.matheusphalves.unittest.fundamentals.matchers.DayOfWeekMatcher;
 import com.matheusphalves.unittest.fundamentals.models.Movie;
 import com.matheusphalves.unittest.fundamentals.models.Allocation;
 import com.matheusphalves.unittest.fundamentals.models.User;
+
+import static com.matheusphalves.unittest.fundamentals.matchers.CustomMatchers.checkDayOfWeekMatcher;
 import static com.matheusphalves.unittest.fundamentals.utils.DateUtil.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -35,7 +38,7 @@ public class AllocationServiceTest {
     private User user;
 
     @Before
-    public void setup(){
+    public void setup() {
         System.out.println("Before");
         allocationService = new AllocationService();
 
@@ -61,17 +64,17 @@ public class AllocationServiceTest {
     }
 
     @After
-    public void tearDown(){
+    public void tearDown() {
         System.out.println("After");
     }
 
     @BeforeClass
-    public static void setupClass(){
+    public static void setupClass() {
         System.out.println("Before class");
     }
 
     @AfterClass
-    public static void tearDownClass(){
+    public static void tearDownClass() {
         System.out.println("After class");
     }
 
@@ -149,7 +152,7 @@ public class AllocationServiceTest {
     }
 
     @Test
-    public void testAllocationEmptyUser() throws Exception{
+    public void testAllocationEmptyUser() throws Exception {
 
         //action
         try {
@@ -181,9 +184,7 @@ public class AllocationServiceTest {
 
         Allocation allocation = allocationService.allocateMovies(user, movies);
 
-        boolean isMonday = DateUtil.checkDayOfWeek(allocation.getReturnDate(), Calendar.MONDAY);
-
-        assertTrue(isMonday);
+        assertThat(allocation.getReturnDate(), checkDayOfWeekMatcher(Calendar.SATURDAY));
     }
 
 }
