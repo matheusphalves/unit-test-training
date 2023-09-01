@@ -14,7 +14,8 @@ jobs:
       
       - name: Setup Node.js env
         uses: actions/setup-node@v2
-        with: 18.x
+        with: 
+          node-version: 18
 
       - name: npm install
         run: npm install
