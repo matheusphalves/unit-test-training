@@ -17,14 +17,9 @@ jobs:
         with: 
           node-version: 18
 
-      - name: npm install
-        run: cd javascript/
-        run: npm install
-      
-      - name: npm run build
-        run: cd javascript/
-        run: npm run build
-
-      - name: npm run test
-        run: cd javascript/
-        run: npm run test
+      - name: npm install, build and test
+        run: | 
+          cd javascript/
+          npm install
+          npm run build
+          npm run test
